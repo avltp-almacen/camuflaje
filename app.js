@@ -21,6 +21,7 @@ function el(id) { return document.getElementById(id); }
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
   el(id).classList.add("active");
+  el("btn-exit").classList.toggle("hidden", id === "screen-join");
 }
 
 function showToast(msg) {
@@ -66,6 +67,15 @@ function clearSession() {
 function roomRef(code) { return ref(db, `rooms/${code}`); }
 
 /* ===================== Pantalla: Unirse / Crear ===================== */
+
+el("btn-exit").addEventListener("click", () => {
+  if (!confirm("¿Salir de la partida actual?")) return;
+  clearSession();
+  currentRoomCode = null;
+  currentPlayerId = null;
+  currentRoom = null;
+  showScreen("screen-join");
+});
 
 el("tab-create").addEventListener("click", () => {
   el("tab-create").classList.add("active");

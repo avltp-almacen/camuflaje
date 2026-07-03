@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Camuflaje</title>
+  <meta name="theme-color" content="#1B0E2B">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- PANTALLA: Entrada / crear o unirse a sala -->
+  <section id="screen-join" class="screen active">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <header class="logo-header">
+      <h1 class="logo">CAMUFLAJE</h1>
+      <p class="tagline">cuela tu mentira, pilla la verdad</p>
+    </header>
+
+    <div class="card">
+      <label class="field-label" for="input-name">Tu nombre</label>
+      <input id="input-name" class="text-input" type="text" maxlength="16" placeholder="Ej. Pablo">
+
+      <div class="join-tabs">
+        <button id="tab-create" class="tab-btn active">Crear sala</button>
+        <button id="tab-join" class="tab-btn">Unirme</button>
+      </div>
+
+      <div id="panel-create" class="tab-panel">
+        <button id="btn-create-room" class="btn btn-accent btn-block">Crear sala nueva</button>
+      </div>
+
+      <div id="panel-join" class="tab-panel hidden">
+        <label class="field-label" for="input-code">Código de sala</label>
+        <input id="input-code" class="text-input code-input" type="text" maxlength="4" placeholder="AB3D" autocapitalize="characters">
+        <button id="btn-join-room" class="btn btn-accent btn-block">Entrar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANTALLA: Lobby (sala de espera) -->
+  <section id="screen-lobby" class="screen">
+    <header class="room-header">
+      <span class="room-code-label">Código de sala</span>
+      <span id="lobby-room-code" class="room-code">----</span>
+    </header>
+
+    <div class="card">
+      <h2 class="section-title">Jugadores</h2>
+      <ul id="lobby-player-list" class="player-list"></ul>
+      <p id="lobby-hint" class="hint-text">Compárteles el código para que se unan. Mínimo 2 jugadores.</p>
+    </div>
+
+    <button id="btn-start-game" class="btn btn-accent btn-block host-only hidden">Empezar partida</button>
+    <p id="lobby-waiting-text" class="hint-text guest-only hidden">Esperando a que el anfitrión empiece la partida…</p>
+  </section>
+
+  <!-- PANTALLA: Escribiendo respuesta falsa -->
+  <section id="screen-writing" class="screen">
+    <header class="room-header">
+      <span class="round-label" id="writing-round-label">Ronda 1 / 5</span>
+    </header>
+
+    <div class="card prompt-card">
+      <p id="writing-prompt" class="prompt-text">Cargando pregunta…</p>
+    </div>
+
+    <div id="writing-form-wrap" class="card">
+      <label class="field-label" for="input-answer">Tu mentira (cuanto más creíble, mejor)</label>
+      <input id="input-answer" class="text-input" type="text" maxlength="80" placeholder="Escribe tu respuesta inventada">
+      <button id="btn-submit-answer" class="btn btn-accent btn-block">Enviar respuesta</button>
+    </div>
+    <div id="writing-submitted-wrap" class="card hidden">
+      <p class="hint-text">✅ Respuesta enviada. Esperando al resto…</p>
+    </div>
+
+    <p id="writing-progress" class="hint-text">0 / 0 han respondido</p>
+    <button id="btn-go-voting" class="btn btn-accent btn-block host-only hidden">Pasar a votación</button>
+  </section>
+
+  <!-- PANTALLA: Votación -->
+  <section id="screen-voting" class="screen">
+    <header class="room-header">
+      <span class="round-label" id="voting-round-label">Ronda 1 / 5</span>
+    </header>
+
+    <div class="card prompt-card">
+      <p id="voting-prompt" class="prompt-text">Cargando pregunta…</p>
+    </div>
+
+    <ul id="voting-options" class="options-list"></ul>
+
+    <p id="voting-progress" class="hint-text">0 / 0 han votado</p>
+    <button id="btn-go-reveal" class="btn btn-accent btn-block host-only hidden">Ver resultados</button>
+  </section>
+
+  <!-- PANTALLA: Revelación de resultados de la ronda -->
+  <section id="screen-reveal" class="screen">
+    <header class="room-header">
+      <span class="round-label" id="reveal-round-label">Ronda 1 / 5</span>
+    </header>
+
+    <div class="card prompt-card">
+      <p id="reveal-prompt" class="prompt-text"></p>
+      <p class="reveal-answer-label">La respuesta real era:</p>
+      <p id="reveal-correct-answer" class="reveal-correct"></p>
+    </div>
+
+    <ul id="reveal-breakdown" class="breakdown-list"></ul>
+
+    <button id="btn-next-round" class="btn btn-accent btn-block host-only hidden">Siguiente ronda</button>
+    <button id="btn-go-final" class="btn btn-accent btn-block host-only hidden">Ver marcador final</button>
+    <p class="hint-text guest-only">Esperando al anfitrión…</p>
+  </section>
+
+  <!-- PANTALLA: Marcador final -->
+  <section id="screen-final" class="screen">
+    <header class="logo-header">
+      <h1 class="logo logo-small">¡FIN DE LA PARTIDA!</h1>
+    </header>
+
+    <ul id="final-scoreboard" class="scoreboard-list"></ul>
+
+    <button id="btn-play-again" class="btn btn-accent btn-block host-only hidden">Jugar otra vez</button>
+    <p class="hint-text guest-only">Esperando al anfitrión…</p>
+  </section>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
